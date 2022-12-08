@@ -1,4 +1,6 @@
 <?php
+# Template for showing on admin page
+
 $posts = get_posts(array(
   'numberposts' => 20,
   'category' => 3,

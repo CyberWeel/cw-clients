@@ -1,4 +1,6 @@
 <?php
+# File for processing client form
+
 require($_SERVER['DOCUMENT_ROOT'].'/wp-load.php');
 
 $cwFormData = $_POST;

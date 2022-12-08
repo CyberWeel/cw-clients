@@ -17,5 +17,5 @@ require get_template_directory() . '/inc/init.php';
 add_action('wp_enqueue_scripts', 'my_scripts');
 function my_scripts() {
 	wp_enqueue_script('jquery');
-	wp_enqueue_script('my_js', get_template_directory_uri().'/main.js');
+	wp_enqueue_script('my_js', '/wp-content/plugins/cw-clients/js/main.js');
 }
