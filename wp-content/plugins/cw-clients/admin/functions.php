@@ -11,3 +11,14 @@ add_action('admin_menu', function() {
     4
   );
 });
+
+# Hide all client forms from posts
+add_action('pre_get_posts', function($query) {
+  global $pagenow;
+
+  if (is_admin() && $pagenow === 'edit.php' && get_query_var('post_type') === 'post') {
+		$query->set('category__not_in', array(CW_CLIENTS_PLUGIN_ID));
+	}
+
+  return $query;
+});
