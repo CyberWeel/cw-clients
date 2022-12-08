@@ -3,7 +3,7 @@
 
 $posts = get_posts(array(
   'numberposts' => 20,
-  'category' => 3,
+  'category' => CW_CLIENTS_PLUGIN_ID,
   'orderby' => 'date',
   'order' => 'DESC',
   'post_type' => 'post',

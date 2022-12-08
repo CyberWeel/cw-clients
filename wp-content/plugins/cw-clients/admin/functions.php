@@ -5,7 +5,7 @@ add_action('admin_menu', function() {
     'Clients',
     'Clients',
     'manage_options',
-    'cw-clients',
+    CW_CLIENTS_PLUGIN_NAME,
     array('CwClients', 'showAdminPage'),
     'dashicons-admin-users',
     4
