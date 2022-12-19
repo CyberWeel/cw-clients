@@ -24,9 +24,10 @@ add_action('pre_get_posts', function($query) {
   return $query;
 });
 
-# Add some JS files for plugin
-add_action('wp_enqueue_scripts', 'cwJSScripts');
-function cwJSScripts() {
-	wp_enqueue_script('jquery');
-	wp_enqueue_script('my_js', '/wp-content/plugins/'.CW_CLIENTS_NAME.'/js/main.js');
-}
+# Add some CSS and JS files for plugin
+add_action('wp_enqueue_scripts', function() {
+  wp_enqueue_style('cwMainCSS', CW_CLIENTS_CSS.'/main.css');
+
+  wp_enqueue_script('jquery');
+	wp_enqueue_script('cwMainJS', CW_CLIENTS_JS.'/main.js');
+});
