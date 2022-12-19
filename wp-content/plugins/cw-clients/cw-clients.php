@@ -1,14 +1,12 @@
 <?php
 /**
 * Plugin Name: CW Clients
-* Description: Plugin for showing client's forms filled by themselves. Special for Noblie
-* Version: 1.0
+* Version: 1.2
 * Author: CyberWeel
-* Author URI: https://github.com/CyberWeel/my-wp-plugin
+* Author URI: https://github.com/CyberWeel/cw-clients
 */
 
-# Activating core plugin files
-require_once $_SERVER['DOCUMENT_ROOT'].'/wp-content/plugins/cw-clients/core/constants.php';
+require_once __DIR__.'/core/consts.php';
 require_once CW_CLIENTS_CLASSES.'/CwClients.php';
+require_once CW_CLIENTS_CORE.'/functions.php';
 require_once CW_CLIENTS_CORE.'/shortcodes.php';
-require_once CW_CLIENTS_ADMIN.'/functions.php';

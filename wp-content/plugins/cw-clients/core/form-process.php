@@ -1,10 +1,7 @@
-<?php
-# File for processing client form
-
+<?php # File for processing client form
 require($_SERVER['DOCUMENT_ROOT'].'/wp-load.php');
 
 $cwFormData = $_POST;
-
 $cwFormDataPost = array(
   'comment_status' => 'closed',
   'ping_status' => 'closed',
@@ -14,7 +11,7 @@ $cwFormDataPost = array(
   'post_status' => 'draft',
   'post_title' => 'Sample Text',
 	'post_type' => 'post',
-  'post_category' => array(CW_CLIENTS_PLUGIN_ID),
+  'post_category' => array(CW_CLIENTS_ID),
   'meta_input' => array(
     'phone' => $cwFormData['phone'],
     'country' => $cwFormData['country'],
