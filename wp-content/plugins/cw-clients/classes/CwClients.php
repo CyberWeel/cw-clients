@@ -21,13 +21,36 @@ final class CwClients {
     ob_start();
 
     foreach($posts as $post):
-      setup_postdata($post) ?>
+      setup_postdata($post);
+      $cwPostImages = get_attached_media('image');
+      $sperma = get_post_thumbnail_id();
+      ?>
       <div>
         <div>Time: <?=$post->post_date?></div>
-        <div>Phone: <?=get_post_meta($post->ID, 'phone', true)?></div>
-        <div>Country: <?=get_post_meta($post->ID, 'country', true)?></div>
-        <div>Description: <?=get_post_meta($post->ID, 'description', true)?></div>
+        <div>Short description: <?php the_excerpt() ?></div>
+        <div>Description: <?php the_content() ?></div>
+        <div>Address: <?=get_post_meta($post->ID, 'address', true)?></div>
+        <div>Phone number: <?=get_post_meta($post->ID, 'phone', true)?></div>
+        <div>Email: <?=get_post_meta($post->ID, 'email', true)?></div>
+        <div>Website: <?=get_post_meta($post->ID, 'website', true)?></div>
+        <div>Facebook: <?=get_post_meta($post->ID, 'facebook', true)?></div>
+        <div>WhatsApp: <?=get_post_meta($post->ID, 'whatsapp', true)?></div>
+        <div>Link about us: <?=get_post_meta($post->ID, 'about', true)?></div>
+        <div>Photos:</div>
+        Thumbnail:
+        <div style="width:300px;height:300px;">
+          <?php the_post_thumbnail() ?>
+        </div>
+        <div>
+          Other:
+          <?php foreach ($cwPostImages as $cwPostImage):
+            if ($cwPostImage->ID !== $sperma): ?>
+            <img src="<?=$cwPostImage->guid?>" style="width:200px;height:200px;">
+            <?php endif;
+          endforeach ?>
+        </div>
       </div>
+      <hr>
       <?php
     endforeach;
     wp_reset_postdata();
@@ -59,12 +82,7 @@ final class CwClients {
         <input class="cw-clients-form__file" name="file2" type="file" id="cw_clients_form_file_2">
         <input class="cw-clients-form__file" name="file3" type="file" id="cw_clients_form_file_3">
       </div>
-      <!-- TODO: Add countries (maybe in select)
-      <div class="cw-clients-form__row">
-        <label class="cw-clients-form__label" for="cw_clients_form_country">Country:</label>
-        <input class="cw-clients-form__input" name="country" type="text" id="cw_clients_form_country">
-      </div>
-      -->
+      <!-- TODO: Add countries (maybe in select) -->
       <div class="cw-clients-form__row">
         <label class="cw-clients-form__label" for="cw_clients_form_address">Address:</label>
         <input class="cw-clients-form__input" name="address" type="text" id="cw_clients_form_address">
