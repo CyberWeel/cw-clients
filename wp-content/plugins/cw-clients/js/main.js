@@ -5,6 +5,8 @@ jQuery(document).ready(function($) {
     const FORM = $(this);
     const FORM_DATA = FORM.serializeArray();
 
+    // TODO: Добавить очистки на уровне JS
+
     $.ajax({
       url: '/wp-content/plugins/cw-clients/core/form-process.php',
       type: 'post',
