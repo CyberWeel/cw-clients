@@ -1,5 +1,19 @@
 <?php # Main plugin class
 final class CwClients {
+  # Set of parameters for getting posts
+  static public function getPostsParams(string $post_status = 'any') :array {
+    return array(
+      'numberposts' => 20,
+      'posts_per_page' => -1,
+      'category' => CW_CLIENTS_ID,
+      'post_type' => 'post',
+      'post_status' => $post_status,
+      'nopaging' => true,
+      'orderby' => 'date',
+      'order' => 'DESC'
+    );
+  }
+
   # Print a template for admin page
   static public function showAdminPage() {
     include_once CW_CLIENTS_ADMIN.'/catalog.php';
@@ -7,53 +21,38 @@ final class CwClients {
 
   # Print a template for clients catalog
   static public function showClientsTemplate () {
-    $posts = get_posts(array(
-      'numberposts' => 20,
-      'category' => CW_CLIENTS_ID,
-      'posts_per_page' => -1,
-      'post_type' => 'post',
-      'post_status' => 'publish',
-      'nopaging' => true,
-      'orderby' => 'date',
-      'order' => 'DESC',
-    ));
+    $posts = get_posts(self::getPostsParams('publish'));
     global $post;
     ob_start();
 
-    foreach($posts as $post):
-      setup_postdata($post);
-      $cwPostImages = get_attached_media('image');
-      $sperma = get_post_thumbnail_id();
+    if (count($posts) > 0) {
+      foreach($posts as $post) {
+        setup_postdata($post);
+        # TODO: Чтобы для поста можно было определить картинку миниатюру, нужно активировать эту возможность функцией - add_theme_support( 'post-thumbnails' ) в файле шаблона funсtions.php. Убедиться, что всё работает.
+        $logoID = get_post_thumbnail_id();
+        ?>
+        <article class="cw-clients-item">
+          <a class="cw-clients-item__link" href="<?=wp_get_shortlink()?>">
+            <?php if ($logoID): ?>
+              <img class="cw-clients-item__logo" src="<?=get_the_post_thumbnail_url(null, 'thumbnail')?>" alt="">
+            <?php else: ?>
+              <div class="cw-clients-item__logo-dummy"></div>
+            <?php endif ?>
+
+            <p class="cw-clients-item__desc"><?=get_the_excerpt()?></p>
+          </a>
+        </article>
+        <?php
+      }
+
+      wp_reset_postdata();
+    }
+    else {
       ?>
-      <div>
-        <div>Time: <?=$post->post_date?></div>
-        <div>Short description: <?php the_excerpt() ?></div>
-        <div>Description: <?php the_content() ?></div>
-        <div>Address: <?=get_post_meta($post->ID, 'address', true)?></div>
-        <div>Phone number: <?=get_post_meta($post->ID, 'phone', true)?></div>
-        <div>Email: <?=get_post_meta($post->ID, 'email', true)?></div>
-        <div>Website: <?=get_post_meta($post->ID, 'website', true)?></div>
-        <div>Facebook: <?=get_post_meta($post->ID, 'facebook', true)?></div>
-        <div>WhatsApp: <?=get_post_meta($post->ID, 'whatsapp', true)?></div>
-        <div>Link about us: <?=get_post_meta($post->ID, 'about', true)?></div>
-        <div>Photos:</div>
-        Thumbnail:
-        <div style="width:300px;height:300px;">
-          <?php the_post_thumbnail() ?>
-        </div>
-        <div>
-          Other:
-          <?php foreach ($cwPostImages as $cwPostImage):
-            if ($cwPostImage->ID !== $sperma): ?>
-            <img src="<?=$cwPostImage->guid?>" style="width:200px;height:200px;">
-            <?php endif;
-          endforeach ?>
-        </div>
-      </div>
-      <hr>
+      <p>There is no posts yet.</p>
       <?php
-    endforeach;
-    wp_reset_postdata();
+    }
+
     return ob_get_clean();
   }
 
@@ -74,7 +73,7 @@ final class CwClients {
       </div>
       <div class="cw-clients-form__row">
         <label class="cw-clients-form__label" for="cw_clients_form_description">Description:</label>
-        <textarea class="cw-clients-form__textarea" name="description" id="cw_clients_form_description"></textarea>
+        <textarea class="cw-clients-form__textarea" name="description" id="cw_clients_form_description" maxlength="500"></textarea>
       </div>
       <div class="cw-clients-form__row">
         <label class="cw-clients-form__label">Photos:</label>

@@ -1,7 +1,7 @@
 <?php
 /**
 * Plugin Name: CW Clients
-* Version: 1.2
+* Version: 2.0
 * Author: CyberWeel
 * Author URI: https://github.com/CyberWeel/cw-clients
 */

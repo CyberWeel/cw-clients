@@ -1,59 +1,62 @@
 <?php # General template for admin page
-$posts = get_posts(array(
-  'numberposts' => 20,
-  'posts_per_page' => -1,
-  'category' => CW_CLIENTS_ID,
-  'post_type' => 'post',
-  'post_status' => 'any',
-  'nopaging' => true,
-  'orderby' => 'date',
-  'order' => 'DESC',
-  'suppress_filters' => true
-));
+$posts = get_posts(CwClients::getPostsParams());
 global $post;
-?>
-<section class="cw-clients-admin">
-  <h1 class="cw-clients-admin__heading">Clients</h1>
-  <div class="cw-clients-admin__content">
-    <table class="wp-list-table widefat fixed striped table-view-list posts">
-      <thead>
-        <tr>
-          <th scope="col" id="id" class="manage-column column-id">ID</th>
-          <th scope="col" id="phone" class="manage-column column-phone">Phone</th>
-          <th scope="col" id="country" class="manage-column column-country">Country</th>
-          <th scope="col" id="status" class="manage-column column-status">Status</th>
-          <th scope="col" id="date" class="manage-column column-date sortable asc">Date</th>
-        </tr>
-      </thead>
-      <tbody id="the-list">
-        <?php foreach($posts as $post): ?>
-          <?php setup_postdata($post) ?>
-          <tr class="iedit author-self level-0 post-<?=get_the_ID()?> type-post status-publish format-standard hentry category-<?=CW_CLIENTS_ID?>">
-            <td class="title column-title has-row-actions column-primary page-title" data-colname="Заголовок">
-              <strong>
-                <a class="row-title" href="/wp-admin/post.php?post=<?=get_the_ID()?>&amp;action=edit"><?=get_the_ID()?></a>
-              </strong>
-              <div class="row-actions">
-                <span class="edit">
-                  <a href="/wp-admin/post.php?post=<?=get_the_ID()?>&amp;action=edit">Изменить</a> |
-                </span>
-                <span class="trash">
-                  <a href="/wp-admin/post.php?post=<?=get_the_ID()?>&amp;action=trash&amp;_wpnonce=9ff1ab2081" class="submitdelete">Удалить</a> |
-                </span>
-                <span class="view">
-                  <a href="<?=wp_get_shortlink()?>" rel="bookmark">Перейти</a>
-                </span>
-              </div>
-            </td>
-            <td><?=get_post_meta($post->ID, 'phone', true)?></td>
-            <td><?=get_post_meta($post->ID, 'country', true)?></td>
-            <td><?=$post->post_status?></td>
-            <td><?=get_the_date('d.m.Y, H:i:s')?></td>
+
+if (count($posts) > 0):
+  include_once CW_CLIENTS_ADMIN.'/styles.php';
+  ?>
+  <section class="cw-clients-admin">
+    <h1 class="cw-clients-admin__heading">Clients</h1>
+    <div class="cw-clients-admin__content">
+      <table class="cw-clients-admin__table">
+        <thead>
+          <tr>
+            <th class="cw-clients-admin__th">ID</th>
+            <th class="cw-clients-admin__th">Email</th>
+            <th class="cw-clients-admin__th">Phone</th>
+            <th class="cw-clients-admin__th">Website</th>
+            <th class="cw-clients-admin__th">Link about us</th>
+            <th class="cw-clients-admin__th">Status</th>
+            <th class="cw-clients-admin__th">Date</th>
           </tr>
-        <?php endforeach ?>
-      </tbody>
-    </table>
-  </div>
-</section>
-<?php wp_reset_postdata() ?>
-<?php # TODO: Грязный файл. Очистить от лишнего. Также, не все кнопки работают ?>
+        </thead>
+        <tbody>
+          <?php
+          foreach ($posts as $post) {
+            setup_postdata($post);
+            ?>
+            <tr class="cw-clients-admin__tr">
+              <td class="cw-clients-admin__td">
+                <a href="/wp-admin/post.php?post=<?=get_the_ID()?>&amp;action=edit">
+                  Client's Card #<?=get_the_ID()?>
+                </a>
+                <div class="cw-clients-admin__actions row-actions">
+                  <a href="/wp-admin/post.php?post=<?=get_the_ID()?>&amp;action=edit">Edit</a>
+                  |
+                  <a class="cw-clients-admin__actions-delete"href="<?=wp_nonce_url('/wp-admin/post.php?post='.get_the_ID().'&amp;action=trash', 'trash-post_'.$post->ID)?>">Delete</a>
+                  |
+                  <a href="<?=wp_get_shortlink()?>">Go to</a>
+                </div>
+              </td>
+              <td class="cw-clients-admin__td"><?=get_post_meta($post->ID, 'email', true)?></td>
+              <td class="cw-clients-admin__td"><?=get_post_meta($post->ID, 'phone', true)?></td>
+              <td class="cw-clients-admin__td"><?=get_post_meta($post->ID, 'website', true)?></td>
+              <td class="cw-clients-admin__td"><?=get_post_meta($post->ID, 'about', true)?></td>
+              <td class="cw-clients-admin__td"><?=$post->post_status?></td>
+              <td class="cw-clients-admin__td"><?=get_the_date('d.m.Y, H:i:s')?></td>
+            </tr>
+            <?php
+          }
+
+          wp_reset_postdata();
+          ?>
+        </tbody>
+      </table>
+    </div>
+  </section>
+<?
+else:
+  ?>
+  <p>There is no posts yet.</p>
+  <?php
+endif;

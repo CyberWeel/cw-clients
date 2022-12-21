@@ -3,7 +3,7 @@
 # Adding menu item for admin page
 add_action('admin_menu', function() {
   add_menu_page(
-    'Clients',
+    'Clients - a plugin for manage client\'s forms.',
     'Clients',
     'manage_options',
     CW_CLIENTS_NAME,
@@ -28,6 +28,6 @@ add_action('pre_get_posts', function($query) {
 add_action('wp_enqueue_scripts', function() {
   wp_enqueue_style('cwMainCSS', CW_CLIENTS_CSS.'/main.css');
 
-  wp_enqueue_script('jquery');
+  wp_enqueue_script('jquery'); # TODO: Try to delete this on website
 	wp_enqueue_script('cwMainJS', CW_CLIENTS_JS.'/main.js');
 });

@@ -1,24 +1,39 @@
 <?php # File for processing client form
 require($_SERVER['DOCUMENT_ROOT'].'/wp-load.php');
 
+if (!function_exists('media_handle_sideload')) {
+  require_once ABSPATH.'wp-admin/includes/image.php';
+  require_once ABSPATH.'wp-admin/includes/file.php';
+  require_once ABSPATH.'wp-admin/includes/media.php';
+}
+
 $cwPostID;
 $cwLogoID;
 $cwFormData = array();
 $cwFormDataPost = $_POST;
 $cwFormDataPost = $cwFormDataPost['form_fields'];
-$cwFormDataFiles = $_FILES;
+$cwFormDataPost = explode('&', $cwFormDataPost);
+$cwImagesTypesAllowed = array('image/jpg', 'image/jpeg', 'image/png');
 
-foreach (explode('&', $cwFormDataPost) as $chunk) {
-  $value = explode('=', $chunk);
+foreach ($cwFormDataPost as $item) {
+  $item = explode('=', $item);
+  $item_key = $item[0];
+  $item_key = sanitize_key(sanitize_text_field($item_key));
+  $item_value = urldecode($item[1]);
 
-  if ($value) {
-    $cwFormData[urldecode($value[0])] = urldecode($value[1]);
+  switch ($item_key) {
+    case 'description':
+      $item_value = sanitize_textarea_field($item_value);
+      if (empty($item_value)) $item_value = 'Empty'; # Without that field post will not be uploaded
+      if (mb_strlen($item_value) > 500) $item_value = mb_substr($item_value, 0, 500);
+      break;
+
+    default:
+      $item_value = sanitize_text_field($item_value);
+      break;
   }
-}
 
-# Without that field post will not be uploaded
-if (empty($cwFormData['description']) || !isset($cwFormData['description'])) {
-  $cwFormData['description'] = 'Empty';
+  $cwFormData[$item_key] = $item_value;
 }
 
 $cwFormData = array(
@@ -44,27 +59,19 @@ $cwFormData = array(
 
 $cwPostID = wp_insert_post($cwFormData);
 
-if (!function_exists('media_handle_sideload')) {
-  require_once ABSPATH.'wp-admin/includes/image.php';
-  require_once ABSPATH.'wp-admin/includes/file.php';
-  require_once ABSPATH.'wp-admin/includes/media.php';
-}
-
-if (!empty($cwFormDataFiles['logo'])) {
+if (!empty($_FILES['logo']) && in_array($_FILES['logo']['type'], $cwImagesTypesAllowed)) {
   $cwLogoID = media_handle_upload('logo', $cwPostID);
   set_post_thumbnail($cwPostID, $cwLogoID);
 }
 
-if (!empty($cwFormDataFiles['file1'])) {
+if (!empty($_FILES['file1']) && in_array($_FILES['file1']['type'], $cwImagesTypesAllowed)) {
   media_handle_upload('file1', $cwPostID);
 }
 
-if (!empty($cwFormDataFiles['file2'])) {
+if (!empty($_FILES['file2']) && in_array($_FILES['file2']['type'], $cwImagesTypesAllowed)) {
   media_handle_upload('file2', $cwPostID);
 }
 
-if (!empty($cwFormDataFiles['file3'])) {
+if (!empty($_FILES['file3']) && in_array($_FILES['file3']['type'], $cwImagesTypesAllowed)) {
   media_handle_upload('file3', $cwPostID);
 }
-
-# TODO: Сделать проверки на уровне PHP. Очистки сделаны автоматически функцией ниже. Но можно ебануть каждому полю sanitize_text_field()

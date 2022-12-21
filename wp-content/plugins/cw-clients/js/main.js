@@ -33,4 +33,3 @@ jQuery(document).ready(function($) {
     });
   });
 });
-// TODO: Добавить очистки на уровне JS
