@@ -18,8 +18,8 @@ add_action('pre_get_posts', function($query) {
   global $pagenow;
 
   if (is_admin() && $pagenow === 'edit.php' && get_query_var('post_type') === 'post') {
-		$query->set('category__not_in', array(CW_CLIENTS_ID));
-	}
+    $query->set('category__not_in', array(CW_CLIENTS_ID));
+  }
 
   return $query;
 });
@@ -29,5 +29,5 @@ add_action('wp_enqueue_scripts', function() {
   wp_enqueue_style('cwMainCSS', CW_CLIENTS_CSS.'/main.css');
 
   wp_enqueue_script('jquery'); # TODO: Try to delete this on website
-	wp_enqueue_script('cwMainJS', CW_CLIENTS_JS.'/main.js');
+  wp_enqueue_script('cwMainJS', CW_CLIENTS_JS.'/main.js');
 });
