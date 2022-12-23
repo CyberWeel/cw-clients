@@ -5,5 +5,7 @@ define('CW_CLIENTS_CLASSES', CW_CLIENTS.'/classes', false);
 define('CW_CLIENTS_CORE', CW_CLIENTS.'/core', false);
 define('CW_CLIENTS_ID', 3); # ID of posts category. TODO: Change it to real.
 define('CW_CLIENTS_NAME', 'cw-clients'); # Name of posts category
+define('CW_CLIENTS_POST_TYPE', 'clients-post'); # Custom type posts
+define('CW_CLIENTS_LABEL', 'Clients Post');
 define('CW_CLIENTS_CSS', '/wp-content/plugins/'.CW_CLIENTS_NAME.'/css', false);
 define('CW_CLIENTS_JS', '/wp-content/plugins/'.CW_CLIENTS_NAME.'/js', false);
