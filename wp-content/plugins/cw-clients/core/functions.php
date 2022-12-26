@@ -52,7 +52,7 @@ add_action('init', function() {
     'map_meta_cap' => 'true',
     'hierarchical' => false,
     'supports' => array(
-      'title', 'editor', 'thumbnail', 'excerpt'
+      'title', 'editor', 'thumbnail'
     ), # TODO: custom-fields. https://wp-kama.ru/function/register_post_type#supports
     # register_meta_box_cb. https://wp-kama.ru/function/register_post_type#register_meta_box_cb
     'taxonomies' => array('category'), # Не уверен, что корректно установил
@@ -74,4 +74,40 @@ add_action('wp_enqueue_scripts', function() {
 
   wp_enqueue_script('jquery');
   wp_enqueue_script('cwMainJS', CW_CLIENTS_JS.'/main.js');
+});
+
+# Add meta boxes for admin page. TODO: Сейчас добавляется только последнее...
+add_action('add_meta_boxes', function() {
+  add_meta_box('cwMetaboxShort', 'Short Description', array('CwClients', 'showMetaBox'), CW_CLIENTS_TYPE, 'advanced', 'default', array('name' => 'short', 'type' => 'text', 'meta' => 'excerpt'));
+  add_meta_box('cwMetaboxAddress', 'Address', array('CwClients', 'showMetaBox'), CW_CLIENTS_TYPE, 'advanced', 'default', array('name' => 'address', 'type' => 'text', 'meta' => 'meta'));
+  add_meta_box('cwMetaboxPhone', 'Phone', array('CwClients', 'showMetaBox'), CW_CLIENTS_TYPE, 'advanced', 'default', array('name' => 'phone', 'type' => 'phone', 'meta' => 'meta'));
+  add_meta_box('cwMetaboxEmail', 'E-mail', array('CwClients', 'showMetaBox'), CW_CLIENTS_TYPE, 'advanced', 'default', array('name' => 'email', 'type' => 'email', 'meta' => 'meta'));
+  add_meta_box('cwMetaboxWebsite', 'Website', array('CwClients', 'showMetaBox'), CW_CLIENTS_TYPE, 'advanced', 'default', array('name' => 'website', 'type' => 'text', 'meta' => 'meta'));
+  add_meta_box('cwMetaboxFacebook', 'Facebook', array('CwClients', 'showMetaBox'), CW_CLIENTS_TYPE, 'advanced', 'default', array('name' => 'facebook', 'type' => 'text', 'meta' => 'meta'));
+  add_meta_box('cwMetaboxWhatsapp', 'Whatsapp', array('CwClients', 'showMetaBox'), CW_CLIENTS_TYPE, 'advanced', 'default', array('name' => 'whatsapp', 'type' => 'text', 'meta' => 'meta'));
+  add_meta_box('cwMetaboxAbout', 'Link about us', array('CwClients', 'showMetaBox'), CW_CLIENTS_TYPE, 'advanced', 'default', array('name' => 'about', 'type' => 'text', 'meta' => 'meta'));
+  add_meta_box('cwMetaboxGallery', "User's Images", array('CwClients', 'showMetaGallery'), CW_CLIENTS_TYPE, 'side', 'low');
+});
+
+# Edit custom post
+add_action('edit_post_'.CW_CLIENTS_TYPE, function($postID) {
+  if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+
+  $short = sanitize_text_field($_POST['short']);
+  $address = sanitize_text_field($_POST['address']);
+  $phone = sanitize_text_field($_POST['phone']);
+  $email = sanitize_text_field($_POST['email']);
+  $website = sanitize_text_field($_POST['website']);
+  $facebook = sanitize_text_field($_POST['facebook']);
+  $whatsapp = sanitize_text_field($_POST['whatsapp']);
+  $about = sanitize_text_field($_POST['about']);
+
+  update_post_meta($postID, 'short', $short);
+  update_post_meta($postID, 'address', $address);
+  update_post_meta($postID, 'phone', $phone);
+  update_post_meta($postID, 'email', $email);
+  update_post_meta($postID, 'website', $website);
+  update_post_meta($postID, 'facebook', $facebook);
+  update_post_meta($postID, 'whatsapp', $whatsapp);
+  update_post_meta($postID, 'about', $about);
 });

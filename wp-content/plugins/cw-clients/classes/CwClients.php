@@ -108,4 +108,40 @@ final class CwClients {
     </form>
     <?php return ob_get_clean();
   }
+
+  # Print a meta box for admin page post editor
+  static public function showMetaBox($post, $vars) {
+    $name = $vars['args']['name'];
+    $type = $vars['args']['type'];
+    $meta = $vars['args']['meta'];
+    $value;
+
+    switch ($meta) {
+      case 'meta':
+        $value = get_post_meta($post->ID, $name, true);
+        break;
+      case 'excerpt':
+        $value = get_the_excerpt();
+        break;
+    }
+
+    echo '<input type="'.$type.'" name="'.$name.'" value="'.$value.'">';
+  }
+
+  # ...
+  static public function showMetaGallery($post) {
+    $thumbnail = get_post_thumbnail_id();
+    $images = get_attached_media('image');
+    $postImages = array();
+
+    foreach ($images as $image) {
+      if ($image->ID !== $thumbnail) {
+        $postImages[] = $image->ID;
+      }
+    }
+
+    $postImages = implode(',', $postImages);
+
+    echo do_shortcode('[gallery ids="'.$postImages.'" orderby="ID" order="ASC" columns="1" size="thumbnail" link="file"]');
+  }
 }

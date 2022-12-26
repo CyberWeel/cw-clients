@@ -1,3 +1,9 @@
+1. Админка: каталог (колонки), детально (мета-боксы).
+2. Фронт: AJAX для отправки формы, пагинация в каталоге.
+
+
+
+
 <table class="wp-list-table widefat fixed striped table-view-list posts">
         <thead>
           <tr>
@@ -36,8 +42,8 @@
           <?php endforeach ?>
           <?php wp_reset_postdata() ?>
         </tbody>
-      </table>
-.
+</table>
+
 
 
 
@@ -45,51 +51,7 @@
 
 FUNCTIONS
 
-# Add meta boxes for admin page. TODO: Сейчас добавляется только последнее...
-add_action('add_meta_boxes', function() {
-	add_meta_box('cwMetaboxShort', 'Short Description', array('CwClients', 'showMetaBox'), 'post', 'advanced', 'default', array('name' => 'short', 'type' => 'text', 'meta' => 'excerpt'));
-	add_meta_box('cwMetaboxShort', 'Address', array('CwClients', 'showMetaBox'), 'post', 'advanced', 'default', array('name' => 'address', 'type' => 'text', 'meta' => 'meta'));
-	add_meta_box('cwMetaboxShort', 'Phone', array('CwClients', 'showMetaBox'), 'post', 'advanced', 'default', array('name' => 'phone', 'type' => 'phone', 'meta' => 'meta'));
-	add_meta_box('cwMetaboxShort', 'E-mail', array('CwClients', 'showMetaBox'), 'post', 'advanced', 'default', array('name' => 'email', 'type' => 'email', 'meta' => 'meta'));
-	add_meta_box('cwMetaboxShort', 'Website', array('CwClients', 'showMetaBox'), 'post', 'advanced', 'default', array('name' => 'website', 'type' => 'text', 'meta' => 'meta'));
-	add_meta_box('cwMetaboxShort', 'Facebook', array('CwClients', 'showMetaBox'), 'post', 'advanced', 'default', array('name' => 'facebook', 'type' => 'text', 'meta' => 'meta'));
-	add_meta_box('cwMetaboxShort', 'Whatsapp', array('CwClients', 'showMetaBox'), 'post', 'advanced', 'default', array('name' => 'whatsapp', 'type' => 'text', 'meta' => 'meta'));
-	add_meta_box('cwMetaboxShort', 'Link about us', array('CwClients', 'showMetaBox'), 'post', 'advanced', 'default', array('name' => 'about', 'type' => 'text', 'meta' => 'meta'));
-});
-
-
-
-
-
-
-add_action( 'save_post', 'myplugin_save_postdata' );
-
-function myplugin_save_postdata( $post_id ) {
-	if (!isset($_POST['myplugin_new_field'])) return;
-  if (!wp_verify_nonce($_POST['myplugin_noncename'], plugin_basename(__FILE__))) return;
-	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-	if (!current_user_can('edit_post', $post_id)) return;
-
-  $my_data = sanitize_text_field($_POST['myplugin_new_field']);
-	update_post_meta($post_id, 'my_meta_key', $my_data);
-}
-
 /*
-add_action('edit_post', 'zalupa_shreka');
-function zalupa_shreka($post_id, $post_itself) {
-  if (!isset($_POST['pidoras'])) return;
-  if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
-  if (!current_user_can('edit_post', $post_id)) return;
-
-  ?>
-  <script>
-    console.log(<? var_dump($post_itself) ?>);
-  </script>
-  <?
-
-  //$value = sanitize_text_field($_POST['pidoras']);
-  //update_post_meta($post_id, 'phone', $value);
-}
 
 $cwPostImages = get_attached_media('image');
 foreach ($cwPostImages as $cwPostImage):
@@ -99,33 +61,6 @@ foreach ($cwPostImages as $cwPostImage):
 endforeach ?>
 <?=get_the_post_thumbnail_url(null, 'thumbnail')?>
 */
-
-
-
-CLASS
-
-  # Print a meta box for admin page post editor
-  static public function showMetaBox($post, $vars) {
-    $name = $vars['args']['name'];
-    $type = $vars['args']['type'];
-    $meta = $vars['args']['meta'];
-    $value;
-
-    switch ($meta) {
-      case 'meta':
-        $value = get_post_meta($post->ID, $name, true);
-        break;
-      case 'excerpt':
-        $value = get_the_excerpt();
-        break;
-    }
-
-    echo '<input type="'.$type.'" name="'.$name.'" value="'.$value.'">';
-  }
-
-  //static public function updateMetaBox($id) {}
-
-
 
 
 
@@ -196,9 +131,6 @@ else:
   <p>There is no posts yet.</p>
   <?php
 endif;
-
-
-
 
 <style>
   .cw-clients-admin__table {
