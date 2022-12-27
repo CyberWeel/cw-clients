@@ -3,12 +3,11 @@ final class CwClients {
   # Set of parameters for getting posts
   static public function getPostsParams(string $status = 'any') :array {
     return array(
-      'numberposts' => 20,
-      'posts_per_page' => -1,
+      'posts_per_page' => 5,
       'category' => CW_CLIENTS_ID,
       'post_type' => CW_CLIENTS_TYPE,
       'post_status' => $status,
-      'nopaging' => true,
+      'nopaging' => false,
       'orderby' => 'date',
       'order' => 'DESC'
     );
@@ -128,7 +127,7 @@ final class CwClients {
     echo '<input type="'.$type.'" name="'.$name.'" value="'.$value.'">';
   }
 
-  # ...
+  # Get gallery of images which belongs to post
   static public function showMetaGallery($post) {
     $thumbnail = get_post_thumbnail_id();
     $images = get_attached_media('image');
@@ -140,8 +139,19 @@ final class CwClients {
       }
     }
 
-    $postImages = implode(',', $postImages);
-
-    echo do_shortcode('[gallery ids="'.$postImages.'" orderby="ID" order="ASC" columns="1" size="thumbnail" link="file"]');
+    if (count($postImages) !== 0) {
+      foreach ($postImages as $postImage) {
+        ?>
+        <a href="/wp-admin/media-upload.php?ID=<?=$post->postImage?>&amp;post_id=<?=$post->ID?>&amp;type=image&amp;TB_iframe=1" class="thickbox">
+          <?=wp_get_attachment_image($postImage, 'thumbnail')?>
+        </a>
+        <?php
+      }
+    }
+    else {
+      ?>
+      <a href="/wp-admin/media-upload.php?post_id=<?=$post->ID?>&amp;type=image&amp;TB_iframe=1" class="thickbox">Add new images</a>
+      <?php
+    }
   }
 }

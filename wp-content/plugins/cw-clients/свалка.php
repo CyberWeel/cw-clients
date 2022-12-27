@@ -1,5 +1,25 @@
-1. Админка: каталог (колонки), детально (мета-боксы).
-2. Фронт: AJAX для отправки формы, пагинация в каталоге.
+1. Админка: в каталоге в колонку "Заголовок" добавить ID формы для идентификации.
+2. Админка: в детальной карточке при отсутствии картинок добавить кнопку "Add images".
+3. Фронт: AJAX при отправке формы - добавить какой-нибудь логичный поп-ап с перенаправлением на главную страницу через 5 секунд, например.
+4. Фронт: пагинация в каталоге.
+
+
+
+$current_page = !empty($_GET['paged']) ? $_GET['paged'] : 1;
+
+      echo paginate_links(array(
+        'base' => site_url().'/clients-posts/%_%',
+        'format' => '?paged=%#%',
+        //'total' => $query->max_num_pages,
+        'total' => 5,
+        'current' => $current_page,
+        'show_all' => false,
+        'end_size' => 1,
+        'mid_size' => 1,
+        'prev_next' => true,
+        'prev_text' => 'Previous '.CW_CLIENTS_LABEL,
+        'next_text' => 'Next '.CW_CLIENTS_LABEL
+      ));
 
 
 
